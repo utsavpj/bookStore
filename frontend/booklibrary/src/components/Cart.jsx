@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Checkout from "./Checkout";
+import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
@@ -62,9 +63,34 @@ export default function Cart({ userData }) {
     fetchCustomerCart();
   }, [userData]);
 
+  const handleQuantityChange = (product, delta) => {
+    let newCartData = [];
+
+    userData.cart.map((c) => {
+      if (c.bookId === product.book._id) {
+        c.quantity += delta;
+        if (c.quantity < 0) {
+          c.quantity = 0;
+        }
+      }
+      return c;
+    });
+    cartData.forEach((c) => {
+      if (c.book._id === product.book._id) {
+        c.quantity += delta;
+        if (c.quantity < 0) {
+          c.quantity = 0;
+        }
+      }
+      if (c.quantity > 0) {
+        newCartData.push(c);
+      }
+    });
+    setcartData(newCartData);
+  };
 
   const handleOrderNow = async () => {
-    console.log(userData.cart)
+    console.log(userData.cart);
     try {
       // Make a patch request to update the order status
       const orderResp = await fetch(
@@ -157,16 +183,23 @@ export default function Cart({ userData }) {
                             >
                               Quantity, {product.book.name}
                             </label>
-                            <select
-                              id={`quantity-${product.quantity}`}
-                              name={`quantity-${product.quantity}`}
-                              value={product.quantity}
-                              className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+
+                            <button
+                              type="button"
+                              className="mr-2"
+                              onClick={() => handleQuantityChange(product, -1)}
                             >
-                              <option value={product.quantity}>
-                                {product.quantity}
-                              </option>
-                            </select>
+                              <MinusCircleIcon className="w-5 h-5 hover:text-green-400" />
+                            </button>
+
+                            <span className="text-lg">{product.quantity}</span>
+                            <button
+                              type="button"
+                              className="ml-2"
+                              onClick={() => handleQuantityChange(product, 1)}
+                            >
+                              <PlusCircleIcon className="w-5 h-5 hover:text-green-400" />
+                            </button>
                           </div>
                         </div>
 
@@ -180,26 +213,25 @@ export default function Cart({ userData }) {
               )}
             </section>
             <section
-            aria-labelledby="summary-heading"
-            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
-          >
-          <button
-          type="button"
-          onClick={() => handleOrderNow()}
-          className="w-full rounded-md border border-transparent bg-green-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-        >
-          Order now
-        </button>
-          </section>
+              aria-labelledby="summary-heading"
+              className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+            >
+              <button
+                type="button"
+                onClick={() => handleOrderNow()}
+                className="w-full rounded-md border border-transparent bg-green-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              >
+                Order now
+              </button>
+            </section>
           </form>
         </div>
       )}
 
       {showPayment && (
         <div className="border-b border-gray-200 text-center bg-white px-4 py-5 sm:px-6">
-        <Checkout clientSecret={stripClientSecret} amount={totalAmount} />
-      </div>
-       
+          <Checkout clientSecret={stripClientSecret} amount={totalAmount} />
+        </div>
       )}
     </div>
   );
