@@ -5,6 +5,7 @@ import {
   getCustomerByEmail,
   saveCustomer,
   updateCustomer,
+  getCustomerById
 } from "../db/customer.js";
 
 import jsonwebtoken from "jsonwebtoken";
