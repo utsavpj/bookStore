@@ -12,7 +12,6 @@ function classNames(...classes) {
 export default function Navigation({logout, userData}) {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(userData)
   return (
     <Disclosure as="nav" className="bg-white shadow">
       {({ open }) => (
@@ -56,7 +55,7 @@ export default function Navigation({logout, userData}) {
                   )}
                     <span className="pl-1">Home</span>
                   </NavLink>
-                  {userData.role === "admin" && <NavLink
+                  {userData?.role === "admin" && <NavLink
                     to="/manage-books"
                     className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 ${
                       location.pathname === "/manage-books"
@@ -105,7 +104,7 @@ export default function Navigation({logout, userData}) {
                 </div>
               </div>
               <div className="flex items-center">
-              {userData.role === "admin" &&
+              {userData?.role === "admin" &&
                 <div className="flex-shrink-0">
                   <Link
                     to="/add-book"
@@ -196,7 +195,7 @@ export default function Navigation({logout, userData}) {
               >
               Home
               </NavLink>
-              {userData.role === "admin" &&
+              {userData?.role === "admin" &&
               <NavLink
                 to='/manage-books'                
                 className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6 ${ location.pathname === "/manage-books" ? "border-indigo-500 bg-indigo-50" : "bg-transparent"}`}
@@ -228,10 +227,10 @@ export default function Navigation({logout, userData}) {
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    {userData.firstName + " " + userData.lastName}
+                    {userData?.firstName + " " + userData?.lastName}
                   </div>
                   <div className="text-sm font-medium text-gray-500">
-                    {userData.emailId}
+                    {userData?.emailId}
                   </div>
                 </div>
                 <button

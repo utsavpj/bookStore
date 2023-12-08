@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Home({ userData }) {
-  console.log(userData);
   const [products, setProducts] = useState([]);
   const [itemAdded, setItemAdded] = useState();
   const [quantity, setQuantity] = useState({});

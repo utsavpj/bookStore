@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 export default function Login({onLogin , userData}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     try {
@@ -14,7 +14,7 @@ export default function Login({onLogin , userData}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ emailId:email, password }),
+        body: JSON.stringify({ emailId: email, password }),
       });
 
       if (response.ok) {
@@ -22,10 +22,11 @@ export default function Login({onLogin , userData}) {
         const data = await response.json();
         toast.success(data.message);
         // Notify the App component about successful login
-        userData = data.customer
-        onLogin(userData);
+        onLogin(data.customer);
+        // Redirect to the home page
+        navigate('/');
       } else {
-        toast.error("Login failed")
+        toast.error('Login failed');
         console.error('Login failed:', response.statusText);
       }
     } catch (error) {

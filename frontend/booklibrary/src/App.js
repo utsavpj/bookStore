@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -12,15 +11,17 @@ import Profile from './components/Profile';
 import AddBook from './components/AddBook';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('sessionToken'));
+  const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+
   useEffect(() => {
     // Fetch login status from the backend when the component mounts
-    fetch('http://localhost:8080/cutomer/login')
+    fetch('http://localhost:8080/customer/login')
       .then((response) => response.json())
       .then((data) => {
         setIsLoggedIn(data.isLoggedIn);
+        setUserData(data.customer);
         setLoading(false);
       })
       .catch((error) => {
@@ -35,11 +36,18 @@ function App() {
     localStorage.setItem('sessionToken', sessionToken);
     // Store the session token in a secure way (e.g., using cookies or local storage)
     document.cookie = `sessionToken=${sessionToken}; Path=/; Secure; SameSite=Strict`;
-  
+
     setIsLoggedIn(true);
     setUserData(userData);
   };
 
+  const handleLogout = () => {
+    // Clear session token from localStorage and cookies
+    localStorage.removeItem('sessionToken');
+    document.cookie = 'sessionToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict';
+    setIsLoggedIn(false);
+    setUserData(null);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -47,12 +55,12 @@ function App() {
 
   return (
     <Router>
-      {isLoggedIn && <Navigation isLoggedIn={isLoggedIn} userData={userData} logout={() => setIsLoggedIn(false)} />}
+      {isLoggedIn && <Navigation isLoggedIn={isLoggedIn} userData={userData} logout={handleLogout} />}
       <Routes>
         <Route
           path="/"
           element={
-            isLoggedIn ? <Home userData={userData} /> : <Login onLogin={handleLogin}/>
+            isLoggedIn ? <Home userData={userData} /> : <Login onLogin={handleLogin} />
           }
         />
         {!isLoggedIn && <Route path="/signup" element={<Signup />} />}
@@ -68,8 +76,6 @@ function App() {
       </Routes>
     </Router>
   );
-};
-
-
+}
 
 export default App;
