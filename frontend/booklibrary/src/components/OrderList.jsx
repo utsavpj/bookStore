@@ -13,9 +13,19 @@ export default function OrderList({userData}) {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/orders/customer/${userData._id}`
-        );
+
+          const response = await fetch(
+            `http://localhost:8080/orders/customer/${userData._id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: userData.token,
+              },
+            }
+          );
+
+        
         if (response.ok) {
           const data = await response.json();
           setOrders(data.orders)
