@@ -1,110 +1,148 @@
 import express from "express";
 import { authenticateToken, isAdmin } from "../utils/auth.js";
-import Book from  "../models/Books.model.js";
-import upload from "../utils/fileUpload.js";
+import {
+  getAllBooks,
+  getBookById,
+  saveBook,
+  updateBook,
+  deleteBook,
+} from "../db/books.js";
 
+import upload from "../utils/fileUpload.js";
+import {
+  addNewBookToInvetory,
+  updateQuantity,
+} from "../db/inventory.js";
 
 const app = express.Router();
 
-//  ------ CRUD FUNCTIONALITY FOR BOOKS -----
-// 1) GET ALL BOOKS --- ACCESS TO ALL USERS
-// 2) GET/:id ---- GET BOOK BY ID ---- Access to all users
-// 3) POST (CREATE A BOOK) ------ ONLY ADMIN
-// 4) UPDATE (UPDATE AN EXISTING BOOK INFORMATION) ----- ONLY ADMIN
-// 5) DELETE (A BOOK) -- ONLY ADMIN
-
-// 1) GET ALL BOOKS FROM DATABASE
+// Get all books
 app.get("/", async (req, res) => {
-    try {
-        const books = await Book.find();
-        res.status(200).send({message: "Books retreived successfully", books:books});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ message: "Internal Server Error!!! Please try again later" });
-    }
+  try {
+    const books = await getAllBooks();
+    res
+      .status(200)
+      .send({ message: "Books retreived successfully", books: books });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Internal Server Error!!! Please try again later" });
+  }
 });
 
-// 2) GET /:id 
-app.get("/:id", async(req, res) => {
-    try {
-        const id =req.params.id;
-        const book = await Book.findOne({_id:id});
-        res.status(200).send({message:"Book Retreived Successfully", books:book});
-    } catch(err) {
-        res.status(500).send({message:"Internal Server Error!!! Please try again later"});
-    }
+// 2) GET one book by id. Endpoint: /:id
+app.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const book = await getBookById(id);
+    res.status(200).send({ book });
+  } catch (err) {
+    console.error(err)
+    res
+      .status(500)
+      .send({ message: "Internal Server Error!!! Please try again later" });
+  }
 });
 
 // ------------- ADMIN FEATURES ------------
-//  3) CREATE A BOOK 
-app.post("/CreateBook", authenticateToken, isAdmin, upload.single("bookImage"), async(req, res) => {
-    console.log("Body received:" , req.body)
-   try {
-    console.log("I AM CREATING BOOK", req.body);
-    const {bookName, bookCategory, bookAuthor, bookDescription, bookPrice, bookQuantity } = req.body;
-    const bookImage =  req.file ? (req.file.buffer.toString("base64")) : "";
-    console.log("bookImage: ", bookImage);
-    // const bookImage = req.file.buffer?.toString('base64') || "";
-    const newBook = await Book.create({
+//  3) CREATE A BOOK
+app.post(
+  "/CreateBook",
+  authenticateToken,
+  isAdmin,
+  upload.single("bookImage"),
+  async (req, res) => {
+    try {
+      const {
+        bookName,
+        bookCategory,
+        bookAuthor,
+        bookDescription,
+        bookPrice,
+        bookQuantity,
+      } = req.body;
+
+      const bookImage = req.file ? req.file.buffer.toString("base64") : "";
+      const newBook = await saveBook(
         bookName,
         bookCategory,
         bookAuthor,
         bookImage,
         bookDescription,
-        bookPrice,
-        bookQuantity
-    });
+        bookPrice
+      );
 
-       
-      console.log("CREAATING", newBook);
-      res.status(201).json(newBook);
+      let inventory = await addNewBookToInvetory(newBook._id, bookQuantity);
 
-   }
-   catch(error) {
-    console.log(error);
-    res.status(403).json({ error: 'Error creating a new book' });
-   }
-    
-});
+      res.status(201).json({
+        id: newBook._id,
+        inventoryId: inventory._id,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(403).json({ error: "Error creating a new book" });
+    }
+  }
+);
 
 // 4) UPDATE (UPDATE AN EXISTING BOOK INFORMATION) ----- ONLY ADMIN
-app.put("/updateBook/:id",authenticateToken, isAdmin , async(req, res)=>{
-    try {
-        const {bookName,bookCategory, bookAuthor, bookDescription, bookPrice, bookQuantity} = req.body;
-        const id = req.params.id;
-        const book =  await Book.findOneAndUpdate(
-            {_id:id},
-            {$set: {bookName, bookCategory, bookAuthor, bookDescription, bookPrice, bookQuantity}},
-            {new:true},
-        );
+app.put("/updateBook/:id", authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const {
+      bookName,
+      bookCategory,
+      bookAuthor,
+      bookDescription,
+      bookPrice,
+      bookQuantity,
+    } = req.body;
+    const id = req.params.id;
 
-        if (!book) {
-            res.status(404).send({ message: `Book with Book Id ${id} not found` });
-        }
+    const book = await updateBook(
+      id,
+      bookName,
+      bookCategory,
+      bookAuthor,
+      bookDescription,
+      bookPrice
+    );
 
-        res.status(200).send({message:`Book with Book Id ${id} Updated Successfully`, books:await Book.find()});
-    } catch(error) {
-        res.status(500).send({message:"Internal Server Error!!! Please try again later"});
+    if (!book) {
+      res.status(404).send({ message: `Book with Book Id ${id} not found` });
     }
-})
 
+    const inventory = await updateQuantity(book._id, bookQuantity)
 
-// 4) DELETE A BOOK
-app.delete("/deleteBook/:id", authenticateToken, isAdmin , async(req, res) => {
-    try {
-        const id =req.params.id;
-       console.log("Check id for deletion", id);
-        const bookToBeDeleted =  await Book.findOneAndDelete({_id:id});
-        console.log("CHECK IF IT EXISTS", bookToBeDeleted);
-        if (!bookToBeDeleted) {      
-            res.status(404).send({ message: `Book with Book Id ${id} not found` });
-        }
-
-       res.status(200).send({message:`Book with Book Id ${id} deleted Successfully`, books:await Book.find()});
-   } catch(err) {
-       res.status(500).send({message:"Internal Server Error!!! Please try again later"});
-   }
+    res.status(200).send({
+      message: `Book with Book Id ${id} Updated Successfully`,
+      book: book,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Internal Server Error!!! Please try again later" });
+  }
 });
 
+// 4) DELETE A BOOK
+app.delete("/deleteBook/:id", authenticateToken, isAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const bookToBeDeleted = await deleteBook(id);
+    if (!bookToBeDeleted) {
+      res.status(404).send({ message: `Book with Book Id ${id} not found` });
+    }
+
+    res.status(200).send({
+      message: `Book with Book Id ${id} deleted Successfully`,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .send({ message: "Internal Server Error!!! Please try again later" });
+  }
+});
 
 export default app;
