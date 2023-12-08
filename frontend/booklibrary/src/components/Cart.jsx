@@ -16,10 +16,19 @@ export default function Cart({ userData }) {
         );
         const data = await response.json();
         if (response.ok) {
-          // setUpdatedCart
-          data.cartItems.forEach((book) => {
-            fetchBookDetails(book);
+          // Reset cartData before fetching new details
+          setcartData([]);
+
+          // Create an array of promises for fetching book details
+          const fetchPromises = data.cartItems.map((book) => {
+            return fetchBookDetails(book);
           });
+
+          // Wait for all promises to resolve
+          const bookDetails = await Promise.all(fetchPromises);
+
+          // Update cartData with the resolved book details
+          setcartData(bookDetails);
         } else {
           console.error("Failed to fetch book details:", response.statusText);
         }
@@ -34,15 +43,16 @@ export default function Cart({ userData }) {
           `http://localhost:8080/books/${item.bookId}`
         );
         if (response.ok) {
-          setcartData([]);
           const bookDetail = await response.json();
           bookDetail.quantity = item.quantity;
-          setcartData((prevDetails) => [...prevDetails, bookDetail]);
+          return bookDetail;
         } else {
           console.error("Failed to fetch book details:", response.statusText);
+          return null;
         }
       } catch (error) {
         console.error("Error during book details fetch:", error);
+        return null;
       }
     };
 
