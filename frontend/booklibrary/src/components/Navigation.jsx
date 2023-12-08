@@ -79,7 +79,7 @@ export default function Navigation({logout, userData}) {
                         : "border-transparent"
                     }`}
                   >
-                  {location.pathname === '/view-orders' ? (
+                  {location.pathname === '/orders' ? (
                     <Queue className="w-6 h-6" />
                   ) : (
                     <QueueListIcon className="w-6 h-6" />
