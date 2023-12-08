@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import Checkout from "./Checkout";
 
 export default function Cart({ userData }) {
+  console.log("UserData: ", userData)
   const [cartData, setcartData] = useState([]);
   const [stripClientSecret, setStripeClientSecret] = useState(null);
 

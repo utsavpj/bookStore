@@ -9,7 +9,6 @@ export default function Home({ userData }) {
   const handleAddToBag = async (product) => {
     try {
       const bookQuantity = quantity[product._id] || 1;
-      console.log(bookQuantity);
       // Make API call to store book data
       const response = await fetch(
         "http://localhost:8080/customer/add-toCart",
@@ -85,7 +84,7 @@ export default function Home({ userData }) {
                 className="border rounded-md border-gray-300 px-1 py-2"
               >
                 <div className="relative">
-                  <div className="relative h-72 w-full overflow-hidden rounded-lg">
+                  <div className="relative h-80 w-full overflow-hidden rounded-lg ">
                     <img
                       src={`data:image/*;base64,${product.bookImage}`}
                       alt={`${product.bookName} Image`}

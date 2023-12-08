@@ -20,7 +20,6 @@ export default function ManageBooks({userData}) {
 
         if (response.ok) {
           const booksData = await response.json();
-          console.log(booksData)
           setProducts(booksData.books);
         } else {
           console.error('Failed to fetch books:', response.statusText);
