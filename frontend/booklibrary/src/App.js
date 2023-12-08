@@ -94,8 +94,7 @@ function App() {
             <Route path="/cart" element={<Cart userData={userData} />} />
                   
             <Route path="/manage-books" element={<ManageBooks userData={userData} />} />
-            <Route path="/view-orders" element={<Orders userData={userData} />} />
-            <Route path="/orders" element={<OrderList userData={userData} />} />
+            <Route path="/view-orders" element={<OrderList userData={userData} />} />
             <Route path="/profile" element={<Profile userData={userData} />} />
             <Route path="/add-book" element={<AddBook userData={userData} />} />
             <Route path="/payment-confirmation" element={<PaymentComplete />} />
