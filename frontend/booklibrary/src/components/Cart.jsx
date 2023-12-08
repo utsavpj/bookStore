@@ -1,8 +1,5 @@
 import {
-  CheckIcon,
-  ClockIcon,
   QuestionMarkCircleIcon,
-  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,13 +7,7 @@ import { toast } from "react-toastify";
 export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
-  const [updatedCartData, setUpdatedCart] = useState();
-<<<<<<< HEAD
 
-=======
-  console.log(cartData);
-  console.log("userdata: ", userData);
->>>>>>> origin/master
   useEffect(() => {
     const fetchCustomerCart = async () => {
       try {
