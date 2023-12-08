@@ -7,7 +7,12 @@ import {
   updateBook,
   deleteBook,
 } from "../db/books.js";
+
 import upload from "../utils/fileUpload.js";
+import {
+  addNewBookToInvetory,
+  updateQuantity,
+} from "../db/inventory.js";
 
 const app = express.Router();
 
@@ -31,10 +36,9 @@ app.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const book = await getBookById(id);
-    res
-      .status(200)
-      .send({ message: "Book Retreived Successfully", books: book });
+    res.status(200).send({ book });
   } catch (err) {
+    console.error(err)
     res
       .status(500)
       .send({ message: "Internal Server Error!!! Please try again later" });
@@ -58,6 +62,7 @@ app.post(
         bookPrice,
         bookQuantity,
       } = req.body;
+
       const bookImage = req.file ? req.file.buffer.toString("base64") : "";
       const newBook = await saveBook(
         bookName,
@@ -65,11 +70,15 @@ app.post(
         bookAuthor,
         bookImage,
         bookDescription,
-        bookPrice,
-        bookQuantity,
+        bookPrice
       );
 
-      res.status(201).json(newBook);
+      let inventory = await addNewBookToInvetory(newBook._id, bookQuantity);
+
+      res.status(201).json({
+        id: newBook._id,
+        inventoryId: inventory._id,
+      });
     } catch (error) {
       console.log(error);
       res.status(403).json({ error: "Error creating a new book" });
@@ -96,20 +105,21 @@ app.put("/updateBook/:id", authenticateToken, isAdmin, async (req, res) => {
       bookCategory,
       bookAuthor,
       bookDescription,
-      bookPrice,
-      bookQuantity
+      bookPrice
     );
 
     if (!book) {
       res.status(404).send({ message: `Book with Book Id ${id} not found` });
     }
 
+    const inventory = await updateQuantity(book._id, bookQuantity)
+
     res.status(200).send({
       message: `Book with Book Id ${id} Updated Successfully`,
-      book: book ,
+      book: book,
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res
       .status(500)
       .send({ message: "Internal Server Error!!! Please try again later" });

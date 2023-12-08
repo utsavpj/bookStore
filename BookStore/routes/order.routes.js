@@ -1,13 +1,16 @@
-import Order from "../db/models/Orders.model.js";
-
-import { deleteOrderById, getOrderById, getOrderForCustomer } from "../db/order.js";
-
 import express from "express";
 import stripeLib from "stripe";
+
 import { authenticateToken } from "../utils/auth.js";
-import Book from "../db/models/Books.model.js";
 import { getCustomerById } from "../db/customer.js";
 import { getBookById } from "../db/books.js";
+import {
+  createOrder,
+  deleteOrderById,
+  getOrderById,
+  getOrderForCustomer,
+} from "../db/order.js";
+import { decreaseQuantity, getInventoryForBookId } from "../db/inventory.js";
 
 const stripe = stripeLib(
   "sk_test_51Nsr57IKWKaCzW6hlGDg0GHN7F3kktuIdlbJrI0wmbZCHbsxIDMSlJ1FtiRVWCBo2B8FaK72hD0WmIl5ODr5pIeK00rIrdekY6"
@@ -28,7 +31,7 @@ app.get("/customer/:id", authenticateToken, async (req, res) => {
     console.log("--to fetch orders using Customer id", customerId);
 
     // now we have to find the customer.. with same id
-    const customer = await getCustomerById( customerId );
+    const customer = await getCustomerById(customerId);
     if (!customer) {
       res.status(404).send({
         message: `Customer with id ${customerId} doesn't exist please log in with correct crendentials `,
@@ -41,7 +44,7 @@ app.get("/customer/:id", authenticateToken, async (req, res) => {
       .status(200)
       .send({ message: "Orders retrieved successfully", orders: allOrders });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).send({ message: "Oops!! Something went Wrong" });
   }
 });
@@ -107,8 +110,9 @@ app.post("/customer/placeOrder/:id", authenticateToken, async (req, res) => {
 
     for (let book of books) {
       const dbBook = await getBookById(book.bookId);
+      const inventory = await getInventoryForBookId(book.bookId);
 
-      const totalAvailableQuantity = dbBook.bookQuantity;
+      const totalAvailableQuantity = inventory.quantity;
 
       if (totalAvailableQuantity >= book.quantity) {
         checkoutBooks.push({
@@ -162,28 +166,21 @@ app.post("/customer/placeOrder/:id", authenticateToken, async (req, res) => {
       let checkoutBooksArr = [];
 
       for (let obj of checkoutBooks) {
-        console.log(obj);
         checkoutBooksArr.push({
           book: obj.book,
           quantity: obj.quantity,
         });
 
-        await Book.findOneAndUpdate(
-          { _id: obj.book._id },
-          { $inc: { bookQuantity: -obj.requestBook.quantity } },
-          { upsert: true }
-        );
+        await decreaseQuantity(obj.book._id, obj.requestBook.quantity);
       }
 
-      console.log(checkoutBooksArr);
-
-      const newOrder = await Order.create({
-        customerId: customerId,
-        books: checkoutBooksArr,
-        orderOptions: orderOptions,
-        paymentIntentId: "paymentIntent.id",
-        orderStatus: "Processing",
-      });
+      const newOrder = await createOrder(
+        customerId,
+        checkoutBooksArr,
+        orderOptions,
+        "paymentIntent.id",
+        "Processing"
+      );
 
       res.status(201).send({
         message: `New order with Order id ${newOrder._id} created successfully`,
@@ -206,20 +203,15 @@ app.delete(
     // -- retreive existing orders.... already processed by the user and already purchased
     try {
       const { orderId, customerId } = req.params;
-      console.log(
-        "CHECK orderId, customerId",
-        orderId,
-        customerId
-      );
 
-      let customer = await getCustomerById(customerId)
+      let customer = await getCustomerById(customerId);
       if (!customer) {
         return res.status(404).send({
           message: `Customer with id ${customerId} doesn't exist.`,
         });
       }
 
-      let order = await getOrderById(orderId)
+      let order = await getOrderById(orderId);
       if (!order) {
         return res.status(404).send({
           message: `Order with id ${orderId} doesn't exist.`,

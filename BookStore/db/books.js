@@ -18,8 +18,7 @@ export async function saveBook(
   bookAuthor,
   bookImage,
   bookDescription,
-  bookPrice,
-  bookQuantity
+  bookPrice
 ) {
   return Book.create({
     bookName,
@@ -27,8 +26,7 @@ export async function saveBook(
     bookAuthor,
     bookImage,
     bookDescription,
-    bookPrice,
-    bookQuantity,
+    bookPrice
   });
 }
 
@@ -39,8 +37,7 @@ export async function updateBook(
   bookCategory,
   bookAuthor,
   bookDescription,
-  bookPrice,
-  bookQuantity
+  bookPrice
 ) {
   return Book.findOneAndUpdate(
     { _id: id },
@@ -51,7 +48,6 @@ export async function updateBook(
         bookAuthor,
         bookDescription,
         bookPrice,
-        bookQuantity,
       },
     },
     { new: true }
