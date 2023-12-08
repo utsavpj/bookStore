@@ -197,8 +197,7 @@ export default function Cart({ userData }) {
       )}
 
       {showPayment && (
-        <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
-        <h3 className="text-base font-semibold leading-6 text-gray-900">Payments</h3>
+        <div className="border-b border-gray-200 text-center bg-white px-4 py-5 sm:px-6">
         <Checkout clientSecret={stripClientSecret} amount={totalAmount} />
       </div>
        

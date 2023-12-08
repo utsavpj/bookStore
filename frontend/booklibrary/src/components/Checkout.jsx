@@ -16,10 +16,15 @@ export default function Checkout({clientSecret, amount}) {
   
   return (
     <Elements stripe={stripePromise} options={options}>
-      <h1 className="mt-8">
-        Please complete your payment: ${formatMoney(amount)}
+      <div className="text-center mt-16">
+            <h1 className="text-lg font-bold tracking-tight text-gray-700">
+                    Please complete your payment: Amount <span className="text-blue-600">{formatMoney(amount)}</span> 
       </h1>
-      <CheckoutForm className="mt=8"/>
+      </div>
+      <div className="m-auto mt-8 max-w-lg">
+        <CheckoutForm />
+
+      </div>
     </Elements>
   );
 }

@@ -52,6 +52,11 @@ function App() {
   }, []);
 
 
+  const updateUserCart = (cart) => {
+    userData.cart = cart
+    setUserData(userData)
+  }
+
   const handleLogin = (userData) => {
     // Assuming your server returns a session token in the response
     const sessionToken = userData.token;
@@ -82,7 +87,7 @@ function App() {
         <Route
           path="/"
           element={
-            isLoggedIn ? <Home userData={userData} /> : <Login onLogin={handleLogin} />
+            isLoggedIn ? <Home userData={userData} updateUserCart={updateUserCart} /> : <Login onLogin={handleLogin} />
           }
         />
 

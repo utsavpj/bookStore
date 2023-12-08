@@ -184,9 +184,10 @@ app.post("/add-toCart", authenticateToken, async (req, res) => {
 
     // Calling addToCart method to update the cart
     const result = await addBookToCustomerCart(customerId, bookId, quantity);
+    let customer = await getCustomerById(customerId)
 
     if (result) {
-      res.status(200).send({ message: "Item added to cart successfully" });
+      res.status(200).send({ message: "Item added to cart successfully", cart: customer.cart });
     } else {
       res.status(500).send({ message: "Error adding item to cart" });
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function Home({ userData }) {
+export default function Home({ userData, updateUserCart }) {
   const [products, setProducts] = useState([]);
   const [itemAdded, setItemAdded] = useState();
   const [quantity, setQuantity] = useState({});
@@ -27,6 +27,8 @@ export default function Home({ userData }) {
       );
 
       if (response.ok) {
+        let body = await response.json()
+        updateUserCart(body.cart)
         setItemAdded({
           ...itemAdded,
           [product._id]: true,
