@@ -11,6 +11,7 @@ export default function ManageBooks({userData}) {
 
   const [products, setProducts] = useState([]);
   const [bookData, setBookData] = useState();
+  const [counter, setCounter] = useState(1);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -32,7 +33,7 @@ export default function ManageBooks({userData}) {
 
     // Call the fetchBooks function
     fetchBooks();
-  }, []); 
+  }, [isUpdate, counter]); 
 
   const handleBookUpdate = (bookData) => {
     setBookData(bookData)
@@ -52,6 +53,7 @@ export default function ManageBooks({userData}) {
         // Remove the deleted book from the state
         setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
         toast.success('Book deleted successfully');
+        setCounter((value) => value + 1);
       } else {
         const errorMessage = await response.text();
         console.error('Failed to delete book:', errorMessage);

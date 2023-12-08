@@ -6,9 +6,11 @@ import { toast } from "react-toastify";
 
 export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
+  const [loadingCartDetails, setLoadingCartDetails] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
 
   useEffect(() => {
+    console.log(userData)
     const fetchCustomerCart = async () => {
       try {
         const response = await fetch(
@@ -27,6 +29,8 @@ export default function Cart({ userData }) {
           // Wait for all promises to resolve
           const bookDetails = await Promise.all(fetchPromises);
 
+          console.log(bookDetails)
+          setLoadingCartDetails(true)
           // Update cartData with the resolved book details
           setcartData(bookDetails);
         } else {
@@ -58,7 +62,7 @@ export default function Cart({ userData }) {
 
     // Fetch details for each book in the cart
     fetchCustomerCart();
-  }, [userData.cart]);
+  }, [userData]);
 
 
   const handleCheckout = () => {
@@ -133,11 +137,11 @@ export default function Cart({ userData }) {
                 className="divide-y divide-gray-200 border-b border-t border-gray-200"
               >
                 {cartData.map((product) => (
-                  <li key={product.books._id} className="flex py-6 sm:py-10">
+                  <li key={product.book._id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
                       <img
-                        src={`data:image/png;base64, ${product.books.bookImage}`}
-                        alt={product.books.bookName}
+                        src={`data:image/png;base64, ${product.book?.bookImage}`}
+                        alt={product.book.bookName}
                         className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
                       />
                     </div>
@@ -151,30 +155,30 @@ export default function Cart({ userData }) {
                                 href="#"
                                 className="font-medium text-gray-700 hover:text-gray-800"
                               >
-                                {product.books.bookName}
+                                {product.book.bookName}
                               </a>
                             </h3>
                           </div>
                           <div className="mt-1 flex text-sm">
                             <p className="text-gray-500">
-                              {product.books.bookAuthor}
+                              {product.book.bookAuthor}
                             </p>
                           </div>
                           <p className="mt-1 text-sm font-medium text-gray-900">
-                            $ {product.books.bookPrice}
+                            $ {product.book.bookPrice}
                           </p>
                         </div>
 
                         <div className="mt-4 sm:mt-0 sm:pr-9">
                           <label
-                            htmlFor={`quantity-${product.books.quantity}`}
+                            htmlFor={`quantity-${product.quantity}`}
                             className="sr-only"
                           >
-                            Quantity, {product.books.name}
+                            Quantity, {product.book.name}
                           </label>
                           <select
-                            id={`quantity-${product.books.quantity}`}
-                            name={`quantity-${product.books.quantity}`}
+                            id={`quantity-${product.quantity}`}
+                            name={`quantity-${product.quantity}`}
                             value={product.quantity}
                             className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                           >
