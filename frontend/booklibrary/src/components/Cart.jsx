@@ -11,7 +11,12 @@ export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [updatedCartData, setUpdatedCart] = useState();
+<<<<<<< HEAD
 
+=======
+  console.log(cartData);
+  console.log("userdata: ", userData);
+>>>>>>> origin/master
   useEffect(() => {
     const fetchCustomerCart = async () => {
       try {
@@ -130,7 +135,7 @@ export default function Cart({ userData }) {
                   <li key={product.books._id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
                       <img
-                        src={product.books.bookImage}
+                        src={`data:image/png;base64, ${product.books.bookImage}`}
                         alt={product.books.bookName}
                         className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
                       />

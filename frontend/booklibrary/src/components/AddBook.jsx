@@ -15,26 +15,34 @@ export default function AddBook({userData}) {
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
+    console.log("CHECKING THE FILE", e);
     setNewBookData((prevData) => ({
       ...prevData,
       bookImage: file,
     }));
+  
   };
 
 
   const handleAddBook = async () => {
     try {
       console.log("Book Data", newBookData)
-      
+      const formData = new FormData();
+      // Append each field to the FormData
+      for (const key in newBookData) {
+        formData.append(key, newBookData[key]);
+      }
+
   
       // Make API call to store book data
       const response = await fetch("http://localhost:8080/books/CreateBook", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           "Authorization": userData.token,
         },
-        body: JSON.stringify(newBookData),
+        body:formData
+        // body: JSON.stringify(newBookData),
       });
   
       if (response.ok) {
@@ -59,7 +67,7 @@ export default function AddBook({userData}) {
           </p>
         </div>
 
-        <form className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2" encType='multipart/form-data'>
+        <form className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2" enctype="multipart/form-data">
           <div className="px-4 py-6 sm:p-8">
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
@@ -182,7 +190,9 @@ export default function AddBook({userData}) {
                         className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                       >
                         <span>Upload a Image</span>
-                        <input id="bookImage" name="bookImage" type="file" onChange={(e) => handleFileInputChange(e)}  accept="image/*"   className="sr-only" />
+                        <input id="bookImage" name="bookImage" 
+                        type="file" onChange={(e) => handleFileInputChange(e)} 
+                        accept="image/*"   className="sr-only" />
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
