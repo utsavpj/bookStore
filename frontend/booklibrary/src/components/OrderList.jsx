@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { formatDate } from "../shared/date";
 import {formatMoney} from "../shared/money"
 import { toast } from "react-toastify";
+import SlideOverOrder from "./Orders";
 
 export default function OrderList({userData}) {
   let [loading, setLoading] = useState(true);
+
+  let [showOrderInfo, setShowOrderInfo] = useState(false);
   let [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -110,7 +113,8 @@ export default function OrderList({userData}) {
                       {formatMoney(order.amount)}
                     </td>
                     <td className="hidden py-6 pr-8 sm:table-cell">
-                      <button className="btn text-indigo-600">View</button>
+                      <button className="btn text-indigo-600" onClick={() => setShowOrderInfo(true)}>View</button>
+                      <SlideOverOrder order={order} open={showOrderInfo} onClose={setShowOrderInfo} />
                     </td>
                   </tr>
                 ))}

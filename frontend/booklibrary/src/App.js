@@ -6,7 +6,6 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Cart from './components/Cart';
 import ManageBooks from './components/ManageBooks';
-import Orders from './components/Orders';
 import Profile from './components/Profile';
 import AddBook from './components/AddBook';
 import PaymentComplete from './components/PaymentComplete';
