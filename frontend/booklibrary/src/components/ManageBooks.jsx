@@ -32,7 +32,7 @@ export default function ManageBooks({userData}) {
 
     // Call the fetchBooks function
     fetchBooks();
-  }, []); 
+  }, [bookData]); 
 
   const handleBookUpdate = (bookData) => {
     setBookData(bookData)
@@ -76,7 +76,14 @@ export default function ManageBooks({userData}) {
           className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
         >
           <div className="flex flex-1 flex-col p-8">
-            <img className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" src={product.bookImage} alt="" />
+     
+            <img
+  src={`data:image/*;base64,${product.bookImage}`}
+  alt={`${product.bookName} Image`}
+  className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" 
+/>
+
+
             <h3 className="mt-6 text-sm font-medium text-gray-900">{product.bookName}</h3>
             <dl className="mt-1 flex flex-grow flex-col justify-between">
               <dt className="sr-only">Author</dt>

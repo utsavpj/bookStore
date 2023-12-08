@@ -87,11 +87,15 @@ export default function Home({ userData }) {
               >
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                    <img
-                      src={`data:image/*;base64,${product.bookImage.fileName}" alt=${product.bookName} Image`}
-                      alt={product.bookName}
-                      className="h-full w-full object-cover object-center"
-                    />
+                 
+
+<img
+  src={`data:image/*;base64,${product.bookImage}`}
+  alt={`${product.bookName} Image`}
+  className="h-full w-full object-cover object-center"
+/>
+
+
                   </div>
                   <div className="relative mt-4 px-1">
                     <h3 className="text-md font-medium text-gray-900">
