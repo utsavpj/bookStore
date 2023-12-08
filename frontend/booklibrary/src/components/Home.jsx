@@ -5,11 +5,12 @@ export default function Home({ userData }) {
   const [products, setProducts] = useState([]);
   const [itemAdded, setItemAdded] = useState();
   const [quantity, setQuantity] = useState({});
+  console.log("userdata: ",userData)
 
   const handleAddToBag = async (product) => {
     try {
-       const bookQuantity = quantity[product._id] || 1;
-       console.log(bookQuantity)
+      const bookQuantity = quantity[product._id] || 1;
+      console.log(bookQuantity);
       // Make API call to store book data
       const response = await fetch(
         "http://localhost:8080/customer/add-toCart",
@@ -86,15 +87,11 @@ export default function Home({ userData }) {
               >
                 <div className="relative">
                   <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                 
-
-<img
-  src={`data:image/*;base64,${product.bookImage}`}
-  alt={`${product.bookName} Image`}
-  className="h-full w-full object-cover object-center"
-/>
-
-
+                    <img
+                      src={`data:image/*;base64,${product.bookImage}`}
+                      alt={`${product.bookName} Image`}
+                      className="h-full w-full object-cover object-center"
+                    />
                   </div>
                   <div className="relative mt-4 px-1">
                     <h3 className="text-md font-medium text-gray-900">
@@ -135,9 +132,7 @@ export default function Home({ userData }) {
                 </span>
                 <div className="mt-6">
                   <button
-                    onClick={() =>
-                      handleAddToBag(product)
-                    }
+                    onClick={() => handleAddToBag(product)}
                     className={`relative flex items-center justify-center rounded-md border border-transparent w-full px-8 py-2 text-sm font-bold ${
                       itemAdded && itemAdded[product._id]
                         ? "bg-green-500 text-white"
