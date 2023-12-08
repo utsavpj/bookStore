@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { HomeIcon, PencilSquareIcon, QueueListIcon, ShoppingCartIcon , Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, HomeIcon as Home, PencilSquareIcon as Pencil, QueueListIcon as Queue, ShoppingCartIcon as ShoppingCart } from "@heroicons/react/20/solid";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function classNames(...classes) {
@@ -11,6 +11,7 @@ function classNames(...classes) {
 
 export default function Navigation({logout, userData}) {
   const location = useLocation();
+  const navigate = useNavigate();
   console.log(userData)
   return (
     <Disclosure as="nav" className="bg-white shadow">
@@ -167,7 +168,8 @@ export default function Navigation({logout, userData}) {
                             <p
                               onClick={async () => {
                                 logout();
-                                toast.success("Sign out successfully")}}
+                                toast.success("Sign out successfully")
+                                navigate('/')}}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
@@ -188,34 +190,32 @@ export default function Navigation({logout, userData}) {
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 pb-3 pt-2">
               {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6"
+              <NavLink
+                to='/'                
+                className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6 ${ location.pathname === "/" ? "border-indigo-500 bg-indigo-50" : "bg-transparent"}`}
               >
-                Dashboard
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
+              Home
+              </NavLink>
+              {userData.role === "admin" &&
+              <NavLink
+                to='/manage-books'                
+                className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6 ${ location.pathname === "/manage-books" ? "border-indigo-500 bg-indigo-50" : "bg-transparent"}`}
               >
-                Team
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
+              Manage Books
+              </NavLink>
+              }
+              <NavLink
+                to='/view-orders'                
+                className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6 ${ location.pathname === "/view-orders" ? "border-indigo-500 bg-indigo-50" : "bg-transparent"}`}
               >
-                Projects
-              </Disclosure.Button>
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 sm:pl-5 sm:pr-6"
+              Orders
+              </NavLink>
+              <NavLink
+                to='/cart'                
+                className={`block border-l-4 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6 ${ location.pathname === "/cart" ? "border-indigo-500 bg-indigo-50" : "bg-transparent"}`}
               >
-                Calendar
-              </Disclosure.Button>
+              Cart
+              </NavLink>
             </div>
             <div className="border-t border-gray-200 pb-3 pt-4">
               <div className="flex items-center px-4 sm:px-6">
@@ -228,10 +228,10 @@ export default function Navigation({logout, userData}) {
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    Tom Cook
+                    {userData.firstName + " " + userData.lastName}
                   </div>
                   <div className="text-sm font-medium text-gray-500">
-                    tom@example.com
+                    {userData.emailId}
                   </div>
                 </div>
                 <button
@@ -254,9 +254,13 @@ export default function Navigation({logout, userData}) {
                 <Disclosure.Button
                   as="a"
                   href="#"
+                  onClick={async () => {
+                    logout();
+                    toast.success("Sign out successfully")
+                    navigate('/')}}
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
                 >
-                  Sign out
+                <Link to="/">Sign out</Link>                 
                 </Disclosure.Button>
               </div>
             </div>

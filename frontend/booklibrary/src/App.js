@@ -30,9 +30,16 @@ function App() {
   }, []);
 
   const handleLogin = (userData) => {
+    // Assuming your server returns a session token in the response
+    const sessionToken = userData.token;
+    localStorage.setItem('sessionToken', sessionToken);
+    // Store the session token in a secure way (e.g., using cookies or local storage)
+    document.cookie = `sessionToken=${sessionToken}; Path=/; Secure; SameSite=Strict`;
+  
     setIsLoggedIn(true);
-    setUserData(userData); // Store user data received from the Login component
+    setUserData(userData);
   };
+
 
   if (loading) {
     return <div>Loading...</div>;

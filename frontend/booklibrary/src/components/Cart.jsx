@@ -11,8 +11,12 @@ export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [updatedCartData, setUpdatedCart] = useState();
+<<<<<<< HEAD
+
+=======
   console.log(cartData);
   console.log("userdata: ", userData);
+>>>>>>> origin/master
   useEffect(() => {
     const fetchCustomerCart = async () => {
       try {
@@ -39,6 +43,7 @@ export default function Cart({ userData }) {
           `http://localhost:8080/books/${item.bookId}`
         );
         if (response.ok) {
+          setcartData([]);
           const bookDetail = await response.json();
           bookDetail.quantity = item.quantity;
           setcartData((prevDetails) => [...prevDetails, bookDetail]);
@@ -175,18 +180,6 @@ export default function Cart({ userData }) {
                             <option value={product.quantity}>{product.quantity}</option>
                           </select>
 
-                          <div className="absolute right-0 top-0">
-                            <button
-                              type="button"
-                              className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                            >
-                              <span className="sr-only">Remove</span>
-                              <XMarkIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
                         </div>
                       </div>
 
