@@ -1,6 +1,7 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./Checkoutform";
+import { formatMoney } from "../shared/money";
 
 
 // Pass the appearance object to the Elements instance
@@ -15,8 +16,10 @@ export default function Checkout({clientSecret, amount}) {
   
   return (
     <Elements stripe={stripePromise} options={options}>
-      Please complete your payment: ${amount}
-      <CheckoutForm />
+      <h1 className="mt-8">
+        Please complete your payment: ${formatMoney(amount)}
+      </h1>
+      <CheckoutForm className="mt=8"/>
     </Elements>
   );
 }
