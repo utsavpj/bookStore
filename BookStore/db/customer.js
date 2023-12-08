@@ -47,5 +47,5 @@ export async function addBookToCustomerCart(customerId, bookId, quantity) {
 
 // get customer's cart
 export async function getCustomerCart(customerId) {
-    return Customer.findById({_id: customerId}).populate('cart');
+    return Customer.findById({_id: customerId}).populate('cart').exec();
 }

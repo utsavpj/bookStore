@@ -209,7 +209,6 @@ app.get("/fetchCartItems/:customerId", async (req, res) => {
 
     const cartItems = customer.cart.map((item) => ({
       bookId: item.bookId._id,
-      bookName: item.bookId.bookName,
       quantity: item.quantity,
     }));
 

@@ -1,5 +1,4 @@
 import express from "express";
-import stripeLib from "stripe";
 
 import { authenticateToken } from "../utils/auth.js";
 import { getCustomerById } from "../db/customer.js";
@@ -11,10 +10,7 @@ import {
   getOrderForCustomer,
 } from "../db/order.js";
 import { decreaseQuantity, getInventoryForBookId } from "../db/inventory.js";
-
-const stripe = stripeLib(
-  "sk_test_51Nsr57IKWKaCzW6hlGDg0GHN7F3kktuIdlbJrI0wmbZCHbsxIDMSlJ1FtiRVWCBo2B8FaK72hD0WmIl5ODr5pIeK00rIrdekY6"
-);
+import { createPaymentIntent } from "../lib/stripe.js";
 
 const app = express.Router();
 
@@ -149,19 +145,8 @@ app.post("/customer/placeOrder/:id", authenticateToken, async (req, res) => {
         OrderRejected: order_not_getting_fulfilled,
       });
     } else {
-      const customerIdStripeAccount = "cus_P7H2e7ZgPMw071I";
-      const payment_method = "pm_card_visa";
-
       // Create paymentIntent and confirm it
-      // const paymentIntent = await stripe.paymentIntents.create({
-      //   amount: orderAmount,
-      //   currency: "USD",
-      //   customer: customerIdStripeAccount,
-      //   confirmation_method: "automatic",
-      //   confirm: true,
-      //   payment_method,
-      //   return_url: "https://localhost:3000",
-      // });
+      const paymentIntent = await createPaymentIntent(orderAmount, "USD");
 
       let checkoutBooksArr = [];
 
@@ -178,15 +163,18 @@ app.post("/customer/placeOrder/:id", authenticateToken, async (req, res) => {
         customerId,
         checkoutBooksArr,
         orderOptions,
-        "paymentIntent.id",
-        "Processing"
+        "Processing",
+        paymentIntent._id,
+        paymentIntent.amount
       );
 
       res.status(201).send({
         message: `New order with Order id ${newOrder._id} created successfully`,
         newOrder,
         OrderRejected: failCheckoutBooks,
-        confirmedPaymentIntent: "paymentIntent.id",
+        paymentClientSecret: paymentIntent.client_secret,
+        paymentCurrency: paymentIntent.currency,
+        amountInCents: paymentIntent.amount,
       });
     }
   } catch (error) {

@@ -33,6 +33,17 @@ const orderSchema = new mongoose.Schema({
         type:String,
         enum : ["Pickup", "Delivery"],
         default: "Delivery"
+    },
+    paymentIntentId: {
+        type: String
+    },
+    paymentStatus: {
+        type: String,
+        enum : ['Processing', 'Success', 'Failed'],
+        default: 'Processing'
+    },
+    amount: {
+        type: String,
     }
 });
 
