@@ -32,7 +32,7 @@ export default function ManageBooks({userData}) {
 
     // Call the fetchBooks function
     fetchBooks();
-  }, [bookData]); 
+  }, [products]); 
 
   const handleBookUpdate = (bookData) => {
     setBookData(bookData)
