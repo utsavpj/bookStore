@@ -40,7 +40,7 @@ export async function updateCustomer(id, firstName, lastName, password) {
 export async function addBookToCustomerCart(customerId, bookId, quantity) {
     let customer = await getCustomerById(customerId);
     if(!customer) {
-        throw new Error('Parameter is not a number!');
+        throw new Error('Customer not found!');
     }
     return customer.addToCart(bookId, quantity);
 }
@@ -48,4 +48,12 @@ export async function addBookToCustomerCart(customerId, bookId, quantity) {
 // get customer's cart
 export async function getCustomerCart(customerId) {
     return Customer.findById({_id: customerId}).populate('cart').exec();
+}
+
+export async function clearCustomerCart(customerId) {
+  let customer = await getCustomerById(customerId);
+  if(!customer) {
+      throw new Error('Customer not found!');
+  }
+  return customer.clearCart()
 }

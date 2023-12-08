@@ -1,12 +1,9 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Checkout from "./Checkout";
 
 export default function Cart({ userData }) {
   const [cartData, setcartData] = useState([]);
-  const [loadingCartDetails, setLoadingCartDetails] = useState(false);
-  const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [stripClientSecret, setStripeClientSecret] = useState(null);
 
   const [showPayment, setShowPayment] = useState(false);
@@ -32,7 +29,6 @@ export default function Cart({ userData }) {
           const bookDetails = await Promise.all(fetchPromises);
 
           console.log(bookDetails);
-          setLoadingCartDetails(true);
           // Update cartData with the resolved book details
           setcartData(bookDetails);
         } else {

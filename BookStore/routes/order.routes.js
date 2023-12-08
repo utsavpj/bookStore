@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authenticateToken } from "../utils/auth.js";
-import { getCustomerById } from "../db/customer.js";
+import { clearCustomerCart, getCustomerById } from "../db/customer.js";
 import { getBookById } from "../db/books.js";
 import {
   createOrder,
@@ -167,6 +167,9 @@ app.post("/customer/placeOrder/:id", authenticateToken, async (req, res) => {
         paymentIntent._id,
         paymentIntent.amount
       );
+
+      // Clear customer cart after successfully processing the order
+      await clearCustomerCart(customerId)
 
       res.status(201).send({
         message: `New order with Order id ${newOrder._id} created successfully`,

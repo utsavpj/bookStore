@@ -121,5 +121,15 @@ customerSchema.methods.addToCart = async function (bookId, quantity) {
   }
 };
 
+customerSchema.methods.clearCart = async function () {
+  try {
+    this.cart = [];
+    await this.save();
+    return { success: true, message: "cart is cleared successfully" };
+  } catch (error) {
+    return { success: false, message: "Error while clearing cart" };
+  }
+};
+
 export const Customer = mongoose.model("Customer", customerSchema);
 export default Customer;
