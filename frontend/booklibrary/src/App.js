@@ -16,19 +16,42 @@ function App() {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Fetch login status from the backend when the component mounts
-    fetch('http://localhost:8080/customer/login')
-      .then((response) => response.json())
-      .then((data) => {
-        setIsLoggedIn(data.isLoggedIn);
-        setUserData(data.customer);
+    const checkSession = async () => {
+
+      try {
+        const token = localStorage.getItem('sessionToken');
+        console.log("token:" ,token)
+      if (!token) {
+        // Handle case when the token is not available
+        return;
+      }
+        const response = await fetch('http://localhost:8080/customer/getUser', {
+          method: 'GET',
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+  
+        if (response.ok) {
+          
+          const data = await response.json();
+          console.log("data: ",data)
+          setIsLoggedIn(data.isLoggedIn);
+          setUserData(data.customer);
+          setLoading(false);
+        } else {
+          console.error('Session check failed:', response.statusText);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error during session check:', error);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching login status:', error);
-        setLoading(false);
-      });
+      }
+    };
+  
+    checkSession();
   }, []);
+
 
   const handleLogin = (userData) => {
     // Assuming your server returns a session token in the response
