@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs";
 
 const app = express.Router();
 const jwt = jsonwebtoken;
-import { authenticateToken, isAdmin } from "../utils/auth.js";
+import { authenticateToken } from "../utils/auth.js";
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello Customers");
@@ -118,6 +118,38 @@ app.post("/login", async (req, res) => {
       error: err,
     });
   }
+});
+
+app.get('/getUser',async (req, res) => {
+  try {
+  const token = req.headers.authorization.split(' ')[1];
+
+  // Check if the session token is valid
+  const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+  const user = await getCustomerById(decodedToken.user_id);
+
+  console.log("Token and user " + token + user);
+
+  if (user) {
+    res.json({
+      isLoggedIn: true,
+      customer: {
+        _id: user._id,
+        emailId: user.emailId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        cart: user.cart,
+        token:token, 
+      },
+    });
+  } else {
+    res.status(401).json({ isLoggedIn: false, message: 'Invalid session token' });
+  }
+} catch (error) {
+  console.error('Error during session check:', error);
+  res.status(401).json({ isLoggedIn: false, message: 'Invalid session token' });
+}
 });
 
 app.put("/update-profile/:id", authenticateToken, async (req, res) => {
