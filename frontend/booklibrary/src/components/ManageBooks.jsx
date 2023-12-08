@@ -1,5 +1,4 @@
 import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid'
-import { Link } from 'react-router-dom'
 import UpdateBook from './UpdateBook'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
@@ -82,7 +81,7 @@ export default function ManageBooks({userData}) {
             <img
   src={`data:image/*;base64,${product.bookImage}`}
   alt={`${product.bookName} Image`}
-  className="mx-auto h-32 w-32 flex-shrink-0 rounded-full" 
+  className="mx-auto h-40 w-32 flex-shrink-0 rounded-md" 
 />
 
 

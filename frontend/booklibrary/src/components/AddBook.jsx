@@ -1,10 +1,9 @@
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
+import { PhotoIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { toast } from 'react-toastify';
 
 export default function AddBook({userData}) {
   const [newBookData, setNewBookData] = useState({});
-  console.log("USerData:" , userData)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewBookData((prevData) => ({
@@ -15,7 +14,6 @@ export default function AddBook({userData}) {
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
-    console.log("CHECKING THE FILE", e);
     setNewBookData((prevData) => ({
       ...prevData,
       bookImage: file,
@@ -26,7 +24,6 @@ export default function AddBook({userData}) {
 
   const handleAddBook = async () => {
     try {
-      console.log("Book Data", newBookData)
       const formData = new FormData();
       // Append each field to the FormData
       for (const key in newBookData) {

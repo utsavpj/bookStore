@@ -5,7 +5,6 @@ export default function Home({ userData }) {
   const [products, setProducts] = useState([]);
   const [itemAdded, setItemAdded] = useState();
   const [quantity, setQuantity] = useState({});
-  console.log("userdata: ",userData)
 
   const handleAddToBag = async (product) => {
     try {

@@ -12,7 +12,7 @@ import AddBook from './components/AddBook';
 import PaymentComplete from './components/PaymentComplete';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('sessionToken'));
+  const [isLoggedIn, setIsLoggedIn] = useState(!localStorage.getItem('sessionToken'));
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
 
@@ -21,7 +21,6 @@ function App() {
 
       try {
         const token = localStorage.getItem('sessionToken');
-        console.log("token:" ,token)
       if (!token) {
         // Handle case when the token is not available
         return;
@@ -36,7 +35,6 @@ function App() {
         if (response.ok) {
           
           const data = await response.json();
-          console.log("data: ",data)
           setIsLoggedIn(data.isLoggedIn);
           setUserData(data.customer);
           setLoading(false);
