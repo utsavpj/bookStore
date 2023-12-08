@@ -72,9 +72,7 @@ export default function Cart({ userData }) {
         },
         body: JSON.stringify({
           books : userData.cart, 
-          orderOptions: "pickup", 
-          customerIdStripeAccount: "cus_P7H2e7ZgPMw071I", 
-          payment_method:"pm_card_visa"
+          orderOptions: "Pickup", 
         }),
       });
 

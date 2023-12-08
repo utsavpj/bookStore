@@ -8,7 +8,7 @@ const bookSchema = mongoose.Schema({
     bookImage: {type: String},
     bookDescription : {type:String},
     bookPrice:{type:Number, required:true},
-
+    bookQuantity: { type: Number, default: 0 },
    
 
     // "bookQunatity" : "322",
