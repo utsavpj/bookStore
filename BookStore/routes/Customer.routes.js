@@ -5,6 +5,7 @@ import {
   getCustomerByEmail,
   saveCustomer,
   updateCustomer,
+  getCustomerById
 } from "../db/customer.js";
 
 import jsonwebtoken from "jsonwebtoken";
@@ -209,7 +210,6 @@ app.get("/fetchCartItems/:customerId", async (req, res) => {
 
     const cartItems = customer.cart.map((item) => ({
       bookId: item.bookId._id,
-      bookName: item.bookId.bookName,
       quantity: item.quantity,
     }));
 

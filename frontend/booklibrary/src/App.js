@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -9,6 +9,7 @@ import ManageBooks from './components/ManageBooks';
 import Orders from './components/Orders';
 import Profile from './components/Profile';
 import AddBook from './components/AddBook';
+import PaymentComplete from './components/PaymentComplete';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('sessionToken'));
@@ -86,14 +87,18 @@ function App() {
             isLoggedIn ? <Home userData={userData} /> : <Login onLogin={handleLogin} />
           }
         />
+
+
         {!isLoggedIn && <Route path="/signup" element={<Signup />} />}
         {isLoggedIn && (
           <>
             <Route path="/cart" element={<Cart userData={userData} />} />
+                  
             <Route path="/manage-books" element={<ManageBooks userData={userData} />} />
             <Route path="/view-orders" element={<Orders userData={userData} />} />
             <Route path="/profile" element={<Profile userData={userData} />} />
             <Route path="/add-book" element={<AddBook userData={userData} />} />
+            <Route path="/payment-confirmation" element={<PaymentComplete />} />
           </>
         )}
       </Routes>

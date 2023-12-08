@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 
 export default function Login({onLogin , userData}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('nirav@test.com');
+  const [password, setPassword] = useState('test2');
   const navigate = useNavigate();
 
   const handleSignIn = async () => {

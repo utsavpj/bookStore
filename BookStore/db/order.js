@@ -24,14 +24,16 @@ export async function createOrder(
   customerId,
   books,
   orderOptions,
+  orderStatus,
   paymentIntentId,
-  orderStatus
+  amount
 ) {
   return Order.create({
     customerId,
     books,
     orderOptions,
-    paymentIntentId,
     orderStatus,
+    paymentIntentId,
+    amount
   });
 }
