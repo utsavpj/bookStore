@@ -66,10 +66,9 @@ export default function Cart({ userData }) {
     fetchCustomerCart();
   }, [userData]);
 
-  const handleCheckout = () => {};
 
   const handleOrderNow = async () => {
-    console.log("Books: ", userData.cart);
+    console.log(userData.cart)
     try {
       // Make a patch request to update the order status
       const orderResp = await fetch(
@@ -184,12 +183,28 @@ export default function Cart({ userData }) {
                 <>Cart is empty</>
               )}
             </section>
+            <section
+            aria-labelledby="summary-heading"
+            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+          >
+          <button
+          type="button"
+          onClick={() => handleOrderNow()}
+          className="w-full rounded-md border border-transparent bg-green-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+        >
+          Order now
+        </button>
+          </section>
           </form>
         </div>
       )}
 
       {showPayment && (
+        <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+        <h3 className="text-base font-semibold leading-6 text-gray-900">Payments</h3>
         <Checkout clientSecret={stripClientSecret} amount={totalAmount} />
+      </div>
+       
       )}
     </div>
   );
